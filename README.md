@@ -1,4 +1,4 @@
 ## Powearch - WordPress launcher
 
-ログイン時に shiftkey を2回とランチャーが立ち上がり、
-WordPress の様々なページを検索できます。
+シフトキーを2回押すとランチャーが立ち上がり、
+WordPress の様々なページを検索できる便利なランチャープラグインです。

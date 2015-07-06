@@ -222,7 +222,7 @@ class powearch {
 						$sub_item_url                                        = esc_url( $sub_item_url );
 						$menuArray[ $loop . '_sub_' . $submenu_key ]['link'] = $sub_item_url;
 					} else {
-						$menuArray[ $loop . '_sub_' . $submenu_key ]['link'] = $sm[2];
+						$menuArray[ $loop . '_sub_' . $submenu_key ]['link'] = admin_url( '/' . $sm[2] );
 					}
 					$pattern                                              = sprintf( "/<%s.*?>.*?<\/%s>/mis", 'span', 'span' );
 					$ret                                                  = preg_replace( $pattern, "", $sm[0] );

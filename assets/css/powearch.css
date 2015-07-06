@@ -145,7 +145,7 @@
 }
 #launcher .tt-menu .is-active{
     background-color: #e8e8e8;
-    background-image: url(../../../assets/img/enter_key.png);
+    background-image: url(../img/enter_key.png);
     background-repeat: no-repeat;
     background-position: 460px center;
 }
@@ -175,6 +175,7 @@
     50% {
         box-shadow: 0 0 10px 16px rgb(162, 161, 107);
         color: #ccc;
+        background: #FFF;
     }
 }
 
