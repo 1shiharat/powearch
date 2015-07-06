@@ -1,0 +1,191 @@
+#launcher{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(24, 37, 53, 0.9);
+    text-align: center;
+    vertical-align: middle;
+    display: none;
+    z-index: 99999;
+    -webkit-animation-name: fadeOut;
+    animation-name: fadeOut;
+    -webkit-animation-duration: .4s;
+    animation-duration: .4s;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+    -webkit-font-smoothing: antialiased;
+    font-family: "Helvetica Neue", "Hiragino Kaku Gothic ProN", "ヒラギノ角ゴ ProN W3", Meiryo, "メイリオ", Helvetica, Arial, sans-serif;
+}
+
+@-webkit-keyframes fadeInDown {
+    0% {
+        opacity: 0;
+        -webkit-filter: blur(10px);
+        -webkit-transform: translate3d(0, -100%, 0);
+        transform: translate3d(0, -100%, 0);
+    }
+    70% {
+        opacity: 0;
+    }
+    100% {
+        -webkit-filter: blur(0px);
+        opacity: 1;
+        -webkit-transform: none;
+        transform: none;
+    }
+}
+
+@keyframes fadeInDown {
+    0% {
+        opacity: 0;
+        -webkit-filter: blur(10px);
+        -webkit-transform: translate3d(0, -100%, 0);
+        transform: translate3d(0, -100%, 0);
+    }
+    70% {
+        opacity: 0;
+    }
+
+    100% {
+        -webkit-filter: blur(0px);
+        opacity: 1;
+        -webkit-transform: none;
+        transform: none;
+    }
+}
+@-webkit-keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+@keyframes fadeOut {
+    0% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}
+
+.fadeOut {
+    -webkit-animation-name: fadeOut;
+    animation-name: fadeOut;
+}
+
+#launcher.active{
+    -webkit-animation-duration: .4s;
+    animation-duration: .4s;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+    -webkit-animation-name: fadeInDown;
+    animation-name: fadeInDown;
+    display: block;
+}
+
+#launcher .launcher__form{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-left: -250px;
+    margin-top: -200px;
+}
+
+#launcher .launcher__input{
+    width: 500px;
+    font-size: 20px;
+    height: 70px;
+    padding-left: 20px;
+    border-radius: 0px;
+    border: none;
+    box-sizing: border-box;
+    box-shadow: 0 0 0px 16px rgba(47, 45, 191, 0.2);
+    transition: all ease .2s;
+    -webkit-appearance: none;
+    background: rgba(255,255,255,0.8);
+    font-weight: bold;
+}
+#launcher .launcher__input.tt-hint{
+    outline: none;
+    font-weight: normal;
+    color: #999;
+    border: none;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+}
+#launcher .launcher__input.tt-input:active,
+#launcher .launcher__input.tt-input:focus{
+    border: none;
+    -webkit-appearance: none;
+    box-shadow: 0 0 0px 16px rgb(162, 161, 107), 0 1px 18px 20px rgba(0,0,0,0.05);
+
+}
+/* Typeahead */
+#launcher.launcher .tt-menu{
+    text-align: left;
+    top: 98.7% !important;
+    left: 1px !important;
+    width: 500px;
+    background: #fff;
+    box-sizing: border-box;
+}
+#launcher.launcher .Typeahead-suggestion{
+    padding-left: 20px;
+    line-height: 3.6em;
+    transition: background-color ease-in .2s;
+    font-size: 16px;
+}
+#launcher .tt-menu .is-active{
+    background-color: #e8e8e8;
+    background-image: url(../../../assets/img/enter_key.png);
+    background-repeat: no-repeat;
+    background-position: 460px center;
+}
+
+.launcher .Typeahead-suggestion:hover{
+    background: #e8e8e8;
+    cursor: pointer;
+}
+@-webkit-keyframes flash {
+    0%, 100% {
+        box-shadow: 0 0 0px 16px rgb(162, 161, 107);
+        color: #000;
+    }
+
+    50% {
+        box-shadow: 0 0 5px 16px rgb(162, 161, 107);
+        color: #ccc;
+    }
+}
+
+@keyframes flash {
+    0%, 100% {
+        box-shadow: 0 0 0px 16px rgb(162, 161, 107);
+        color: #000;
+    }
+
+    50% {
+        box-shadow: 0 0 10px 16px rgb(162, 161, 107);
+        color: #ccc;
+    }
+}
+
+.flash {
+    -webkit-animation-name: flash;
+    animation-name: flash;
+    webkit-animation-duration: .15s;
+    animation-duration: .15s;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+}
+.tt-highlight{
+    background: rgb(236, 236, 193);
+}
