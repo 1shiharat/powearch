@@ -12,6 +12,8 @@ License URI: http://www.gnu.org/licenses/gpl-2.0.html
 Release.Is a powerful search plugin for WordPress users.
 Implements typeahead.js using a ingrimental search.
 
+Start by pressing SHIFT key two times.
+
 [Github] (https://github.com/1shiharaT/powearch/)
 
 == Installation ==
