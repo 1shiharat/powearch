@@ -44,9 +44,10 @@ class powearch {
 			wp_send_json( $menus );
 		}
 
+    $post_types = get_post_types( array( 'public' => true ), 'names' );
 
 		$args = apply_filters( 'powearch_query_settings', array(
-			'post_type'      => array( 'post', 'page' ),
+			'post_type'      => $post_types,
 			's'              => $q,
 			'posts_per_page' => 10
 		) );
