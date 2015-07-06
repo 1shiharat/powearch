@@ -2,9 +2,9 @@
 /*
 Plugin Name: Powearch
 Plugin URI: http://grow-group.jp/
-Description: ランチャー
+Description: Is a powerful search plugin for WordPress users. 
 Author: 1shiharaT
-Version: 0.3.3
+Version: 0.0.1
 Author URI: http://grow-group.jp/
 Text Domain: powearch
 Domain Path: /languages/
@@ -45,7 +45,7 @@ class powearch {
 		}
 
 
-		$args = apply_filters(  'powearch_query_settings', array(
+		$args = apply_filters( 'powearch_query_settings', array(
 			'post_type'      => array( 'post', 'page' ),
 			's'              => $q,
 			'posts_per_page' => 10
@@ -53,7 +53,7 @@ class powearch {
 
 		$posts = get_posts( $args );
 
-		foreach( $posts as $post ){
+		foreach ( $posts as $post ) {
 			$post_type_obj = get_post_type_object( $post->post_type );
 			$menus[]       = array(
 				'value' => $post_type_obj->labels->name . ' : ' . get_the_title( $post->ID ) . __( ' View', 'powearch' ),
@@ -62,7 +62,7 @@ class powearch {
 			);
 			$menus[]       = array(
 				'value' => $post_type_obj->labels->name . ' : ' . get_the_title( $post->ID ) . __( ' Edit', 'powearch' ),
-				'link'  => admin_url( '/post.php?post=' .  $post->ID . '&action=edit' ),
+				'link'  => admin_url( '/post.php?post=' . $post->ID . '&action=edit' ),
 				'group' => $post_type_obj->labels->name
 			);
 		}
@@ -94,8 +94,8 @@ class powearch {
 	 */
 	public function typeahead_init() {
 		if ( is_user_logged_in() || is_admin() ) {
-			wp_enqueue_style( 'typeahead_init', plugins_url( 'assets/css/powearch.css', __FILE__ ) , array(), null, false );
-			wp_enqueue_script( 'typeahead_core', plugins_url( 'assets/js/typeahead.bundle.js', __FILE__ ) , array(
+			wp_enqueue_style( 'typeahead_init', plugins_url( 'assets/css/powearch.css', __FILE__ ), array(), null, false );
+			wp_enqueue_script( 'typeahead_core', plugins_url( 'assets/js/typeahead.bundle.js', __FILE__ ), array(
 				'jquery',
 				'underscore'
 			), null, false );
@@ -121,6 +121,7 @@ class powearch {
 			delete_transient( 'wpa_menu_object' );
 			set_transient( 'wpa_menu_object', $save_menus );
 		}
+
 	}
 
 	/**
@@ -220,7 +221,7 @@ class powearch {
 							$sub_item_url = add_query_arg( array( 'page' => $sm[2] ), 'admin.php' );
 						}
 						$sub_item_url                                        = esc_url( $sub_item_url );
-						$menuArray[ $loop . '_sub_' . $submenu_key ]['link'] = $sub_item_url;
+						$menuArray[ $loop . '_sub_' . $submenu_key ]['link'] = admin_url( '/' . $sub_item_url );
 					} else {
 						$menuArray[ $loop . '_sub_' . $submenu_key ]['link'] = admin_url( '/' . $sm[2] );
 					}
