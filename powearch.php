@@ -1,4 +1,5 @@
 <?php
+
 /*
 Plugin Name: Powearch
 Plugin URI: http://grow-group.jp/
@@ -23,18 +24,21 @@ class powearch {
 		add_action( 'wp_enqueue_scripts', array( $this, 'typeahead_init' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'typeahead_init' ) );
 		add_action( 'wp_footer', array( $this, 'tyepahead_search_template' ) );
+		add_action( 'admin_footer', array( $this, 'tyepahead_search_template' ) );
 		add_action( 'adminmenu', array( $this, 'save_adminmenu' ) );
 		add_action( 'wp_ajax_launcher', array( $this, 'launcher' ) );
 	}
 
 	/**
 	 * 記事を取得
+	 *
 	 * @param array $args WP_Query の配列
+	 *
 	 * @return array $posts 投稿の配列
 	 */
-	protected static function get_posts( $args ){
+	protected static function get_posts( $args ) {
 
-		$posts = array();
+		$posts        = array();
 		$search_query = new WP_Query( $args );
 
 		if ( $search_query->have_posts() ) {
@@ -122,7 +126,8 @@ class powearch {
 	public function typeahead_init() {
 
 		if ( ! is_user_logged_in()
-		     && ! is_admin() ) {
+		     && ! is_admin()
+		) {
 			return false;
 		}
 
@@ -151,10 +156,10 @@ class powearch {
 		global $menu, $submenu;
 		$save_menus = $this->menu_output( $menu, $submenu );
 
-		if ( ( $save_menus && ! get_transient( 'wpa_menu_object' ) ) || $this->debug_mode === true ) {
-			delete_transient( 'wpa_menu_object' );
-			set_transient( 'wpa_menu_object', $save_menus );
-		}
+//		if ( ( $save_menus && ! get_transient( 'wpa_menu_object' ) ) || $this->debug_mode === true ) {
+		delete_transient( 'wpa_menu_object' );
+		set_transient( 'wpa_menu_object', $save_menus );
+//		}
 
 	}
 
@@ -176,7 +181,7 @@ class powearch {
 			</form>
 			<div class="laucher__results Typeahead-menu"></div>
 		</div>
-		<?php
+	<?php
 	}
 
 
@@ -197,31 +202,33 @@ class powearch {
 		// 0 = menu_title, 1 = capability, 2 = menu_slug, 3 = page_title, 4 = classes, 5 = hookname, 6 = icon_url
 		foreach ( $menu as $key => $item ) {
 			$admin_is_parent = false;
-			$class = array();
+			$class           = array();
 			$aria_attributes = '';
-			$is_separator = false;
+			$is_separator    = false;
 
 			if ( $first ) {
 				$class[] = 'wp-first-item';
-				$first = false;
+				$first   = false;
 			}
 
 			$submenu_items = array();
-			if ( ! empty( $submenu[$item[2]] ) ) {
-				$class[] = 'wp-has-submenu';
-				$submenu_items = $submenu[$item[2]];
+			if ( ! empty( $submenu[ $item[2] ] ) ) {
+				$class[]       = 'wp-has-submenu';
+				$submenu_items = $submenu[ $item[2] ];
 			}
 
-			if ( ( $parent_file && $item[2] == $parent_file ) || ( empty($typenow) && $self == $item[2] ) ) {
+			if ( ( $parent_file && $item[2] == $parent_file ) || ( empty( $typenow ) && $self == $item[2] ) ) {
 				$class[] = ! empty( $submenu_items ) ? 'wp-has-current-submenu wp-menu-open' : 'current';
 			} else {
 				$class[] = 'wp-not-current-submenu';
-				if ( ! empty( $submenu_items ) )
+				if ( ! empty( $submenu_items ) ) {
 					$aria_attributes .= 'aria-haspopup="true"';
+				}
 			}
 
-			if ( ! empty( $item[4] ) )
+			if ( ! empty( $item[4] ) ) {
 				$class[] = esc_attr( $item[4] );
+			}
 
 			$class = $class ? ' class="' . join( ' ', $class ) . '"' : '';
 
@@ -237,34 +244,36 @@ class powearch {
 
 			} elseif ( $submenu_as_parent && ! empty( $submenu_items ) ) {
 				$submenu_items = array_values( $submenu_items );  // Re-index.
-				$menu_hook = get_plugin_page_hook( $submenu_items[0][2], $item[2] );
-				$menu_file = $submenu_items[0][2];
-				if ( false !== ( $pos = strpos( $menu_file, '?' ) ) )
+				$menu_hook     = get_plugin_page_hook( $submenu_items[0][2], $item[2] );
+				$menu_file     = $submenu_items[0][2];
+				if ( false !== ( $pos = strpos( $menu_file, '?' ) ) ) {
 					$menu_file = substr( $menu_file, 0, $pos );
+				}
 				if ( ! empty( $menu_hook ) || ( ( 'index.php' != $submenu_items[0][2] ) && file_exists( WP_PLUGIN_DIR . "/$menu_file" ) && ! file_exists( ABSPATH . "/wp-admin/$menu_file" ) ) ) {
-					$admin_is_parent = true;
-					$menu_array[$key]['value'] = $title;
-					$menu_array[$key]['link'] = admin_url( "/admin.php?page={$submenu_items[0][2]}" );
-					$menu_array[$key]['group'] = $title;
+					$admin_is_parent             = true;
+					$menu_array[ $key ]['value'] = self::strip_title( $title );
+					$menu_array[ $key ]['link']  = admin_url( "/admin.php?page={$submenu_items[0][2]}" );
+					$menu_array[ $key ]['group'] = self::strip_title( $title );
 				} else {
-					$menu_array[$key]['value'] = $title;
-					$menu_array[$key]['link'] = admin_url( $submenu_items[0][2] );
-					$menu_array[$key]['group'] = $title;
+					$menu_array[ $key ]['value'] = self::strip_title( $title );
+					$menu_array[ $key ]['link']  = admin_url( $submenu_items[0][2] );
+					$menu_array[ $key ]['group'] = self::strip_title( $title );
 				}
 			} elseif ( ! empty( $item[2] ) && current_user_can( $item[1] ) ) {
 				$menu_hook = get_plugin_page_hook( $item[2], 'admin.php' );
 				$menu_file = $item[2];
-				if ( false !== ( $pos = strpos( $menu_file, '?' ) ) )
+				if ( false !== ( $pos = strpos( $menu_file, '?' ) ) ) {
 					$menu_file = substr( $menu_file, 0, $pos );
+				}
 				if ( ! empty( $menu_hook ) || ( ( 'index.php' != $item[2] ) && file_exists( WP_PLUGIN_DIR . "/$menu_file" ) && ! file_exists( ABSPATH . "/wp-admin/$menu_file" ) ) ) {
-					$admin_is_parent = true;
-					$menu_array[$key]['value'] = $item[0];
-					$menu_array[$key]['link'] = admin_url( "/admin.php?page={$item[2]}" );
-					$menu_array[$key]['group'] = $item[0];
+					$admin_is_parent             = true;
+					$menu_array[ $key ]['value'] = self::strip_title( $item[0] );
+					$menu_array[ $key ]['link']  = admin_url( "/admin.php?page={$item[2]}" );
+					$menu_array[ $key ]['group'] = self::strip_title( $item[0] );
 				} else {
-					$menu_array[$key]['value'] = $item[0];
-					$menu_array[$key]['link'] = admin_url( $item[2] );
-					$menu_array[$key]['group'] = $item[0];
+					$menu_array[ $key ]['value'] = self::strip_title( $item[0] );
+					$menu_array[ $key ]['link']  = admin_url( $item[2] );
+					$menu_array[ $key ]['group'] = self::strip_title( $item[0] );
 				}
 			}
 
@@ -274,28 +283,31 @@ class powearch {
 
 				// 0 = menu_title, 1 = capability, 2 = menu_slug, 3 = page_title, 4 = classes
 				foreach ( $submenu_items as $sub_key => $sub_item ) {
-					if ( ! current_user_can( $sub_item[1] ) )
+					if ( ! current_user_can( $sub_item[1] ) ) {
 						continue;
+					}
 
 					$class = array();
 					if ( $first ) {
 						$class[] = 'wp-first-item';
-						$first = false;
+						$first   = false;
 					}
 
 					$menu_file = $item[2];
 
-					if ( false !== ( $pos = strpos( $menu_file, '?' ) ) )
+					if ( false !== ( $pos = strpos( $menu_file, '?' ) ) ) {
 						$menu_file = substr( $menu_file, 0, $pos );
+					}
 
 					$self_type = ! empty( $typenow ) ? $self . '?post_type=' . $typenow : 'nothing';
 
 					if ( isset( $submenu_file ) ) {
-						if ( $submenu_file == $sub_item[2] )
+						if ( $submenu_file == $sub_item[2] ) {
 							$class[] = 'current';
+						}
 					} elseif (
 						( ! isset( $plugin_page ) && $self == $sub_item[2] ) ||
-						( isset( $plugin_page ) && $plugin_page == $sub_item[2] && ( $item[2] == $self_type || $item[2] == $self || file_exists($menu_file) === false ) )
+						( isset( $plugin_page ) && $plugin_page == $sub_item[2] && ( $item[2] == $self_type || $item[2] == $self || file_exists( $menu_file ) === false ) )
 					) {
 						$class[] = 'current';
 					}
@@ -305,12 +317,13 @@ class powearch {
 					}
 
 
-					$menu_hook = get_plugin_page_hook($sub_item[2], $item[2]);
-					$sub_file = $sub_item[2];
-					if ( false !== ( $pos = strpos( $sub_file, '?' ) ) )
-						$sub_file = substr($sub_file, 0, $pos);
+					$menu_hook = get_plugin_page_hook( $sub_item[2], $item[2] );
+					$sub_file  = $sub_item[2];
+					if ( false !== ( $pos = strpos( $sub_file, '?' ) ) ) {
+						$sub_file = substr( $sub_file, 0, $pos );
+					}
 
-					$title = wptexturize($sub_item[0]);
+					$title = wptexturize( $sub_item[0] );
 
 					if ( ! empty( $menu_hook ) || ( ( 'index.php' != $sub_item[2] ) && file_exists( WP_PLUGIN_DIR . "/$sub_file" ) && ! file_exists( ABSPATH . "/wp-admin/$sub_file" ) ) ) {
 						if ( ( ! $admin_is_parent && file_exists( WP_PLUGIN_DIR . "/$menu_file" ) && ! is_dir( WP_PLUGIN_DIR . "/{$item[2]}" ) ) || file_exists( $menu_file ) ) {
@@ -319,20 +332,28 @@ class powearch {
 							$sub_item_url = add_query_arg( array( 'page' => $sub_item[2] ), 'admin.php' );
 						}
 						$sub_item_url = esc_url( $sub_item_url );
-						$menu_array[$key . '_sub_' . $sub_key]['value'] = $title;
-						$menu_array[$key . '_sub_' . $sub_key]['link'] = admin_url( $sub_item_url );
-						$menu_array[$key . '_sub_' . $sub_key]['link'] = $item[0];
+
+						$menu_array[ $key . '_sub_' . $sub_key ]['value'] = self::strip_title( $item[0] ) . ' - ' . self::strip_title( $title );
+						$menu_array[ $key . '_sub_' . $sub_key ]['link']  = admin_url( $sub_item_url );
+						$menu_array[ $key . '_sub_' . $sub_key ]['group'] = $item[0];
 
 					} else {
-						$menu_array[$key . '_sub_' . $sub_key]['value'] = $title;
-						$menu_array[$key . '_sub_' . $sub_key]['link'] = admin_url( $sub_item[2] );
-						$menu_array[$key . '_sub_' . $sub_key]['link'] = $item[0];
+						$menu_array[ $key . '_sub_' . $sub_key ]['value'] = self::strip_title( $item[0] ) . ' - ' . self::strip_title( $title );
+						$menu_array[ $key . '_sub_' . $sub_key ]['link']  = admin_url( $sub_item[2] );
+						$menu_array[ $key . '_sub_' . $sub_key ]['group'] = self::strip_title( $item[0] );
 					}
 				}
 			}
 		}
 
 		return $menu_array;
+	}
+
+	protected static function strip_title( $pre_title ) {
+		$pattern = sprintf( "/<%s.*?>.*?<\/%s>/mis", 'span', 'span' );
+		$title   = preg_replace( $pattern, "", $pre_title );
+
+		return strip_tags( $title );
 	}
 
 }
