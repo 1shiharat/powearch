@@ -23,7 +23,6 @@ class powearch {
 		add_action( 'wp_enqueue_scripts', array( $this, 'typeahead_init' ) );
 		add_action( 'admin_enqueue_scripts', array( $this, 'typeahead_init' ) );
 		add_action( 'wp_footer', array( $this, 'tyepahead_search_template' ) );
-		add_action( 'admin_footer', array( $this, 'tyepahead_search_template' ) );
 		add_action( 'adminmenu', array( $this, 'save_adminmenu' ) );
 		add_action( 'wp_ajax_launcher', array( $this, 'launcher' ) );
 	}
