@@ -1,4 +1,8 @@
-## Powearch - WordPress launcher
+## Powearch - WordPress Launcher Plugin
 
-シフトキーを2回押すとランチャーが立ち上がり、
-WordPress の様々なページを検索できる便利なランチャープラグインです。
+![Powearch](http://zippy.gfycat.com/OnlySecondArabianhorse.gif)
+
+インストール後、何も考えずにシフトキーを2回押してみましょう。
+
+そこであなたはこのプラグインがどのようなプラグインか理解できるはずです。
+

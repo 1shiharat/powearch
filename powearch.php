@@ -15,6 +15,8 @@ class powearch {
 
 	protected $debug_mode = true;
 
+	public $transient_key = 'powearch_cache';
+
 	public $menus = array();
 
 	/**
@@ -26,7 +28,7 @@ class powearch {
 		add_action( 'wp_footer', array( $this, 'tyepahead_search_template' ) );
 		add_action( 'admin_footer', array( $this, 'tyepahead_search_template' ) );
 		add_action( 'adminmenu', array( $this, 'save_adminmenu' ) );
-		add_action( 'wp_ajax_launcher', array( $this, 'launcher' ) );
+		add_action( 'wp_ajax_launcher', array( $this, 'get_results' ) );
 	}
 
 	/**
@@ -67,7 +69,7 @@ class powearch {
 	/**
 	 * Ajax へリクエストを返す
 	 */
-	public function launcher() {
+	public function get_results() {
 
 		$nonce = ( isset( $_REQUEST['nonce'] ) ) ? $_REQUEST['nonce'] : '';
 
@@ -78,7 +80,7 @@ class powearch {
 		$q = ( isset( $_REQUEST['q'] ) ) ? esc_html( $_REQUEST['q'] ) : '';
 
 		$returnMenuObject = array();
-		$menus            = get_transient( 'wpa_menu_object' );
+		$menus            = get_transient( $this->transient_key );
 
 		if ( ! $q ) {
 			wp_send_json( $menus );
@@ -156,10 +158,10 @@ class powearch {
 		global $menu, $submenu;
 		$save_menus = $this->menu_output( $menu, $submenu );
 
-//		if ( ( $save_menus && ! get_transient( 'wpa_menu_object' ) ) || $this->debug_mode === true ) {
-		delete_transient( 'wpa_menu_object' );
-		set_transient( 'wpa_menu_object', $save_menus );
-//		}
+		if ( ( $save_menus && ! get_transient( $this->transient_key ) ) || $this->debug_mode === true ) {
+			delete_transient( $this->transient_key );
+			set_transient( $this->transient_key, $save_menus );
+		}
 
 	}
 
@@ -186,7 +188,7 @@ class powearch {
 
 
 	/**
-	 * メニューを出力
+	 * メニューを配列として整形
 	 *
 	 * @param $menu
 	 * @param $submenu
@@ -349,6 +351,13 @@ class powearch {
 		return $menu_array;
 	}
 
+	/**
+	 * タイトルからHTMLを排除
+	 *
+	 * @param string $pre_title
+	 *
+	 * @return string
+	 */
 	protected static function strip_title( $pre_title ) {
 		$pattern = sprintf( "/<%s.*?>.*?<\/%s>/mis", 'span', 'span' );
 		$title   = preg_replace( $pattern, "", $pre_title );
