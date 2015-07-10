@@ -1,4 +1,5 @@
 <?php
+
 /*
 Plugin Name: Powearch
 Plugin URI: http://grow-group.jp/
@@ -12,11 +13,13 @@ Domain Path: /languages/
 
 class powearch {
 
-	protected $debug_mode = true;
+	protected $debug_mode = false;
 
 	public $transient_key = 'powearch_cache';
 
 	public $menus = array();
+
+	public $capability = 'administrator';
 
 	/**
 	 * initialization of class
@@ -28,6 +31,16 @@ class powearch {
 		add_action( 'admin_footer', array( $this, 'tyepahead_search_template' ) );
 		add_action( 'adminmenu', array( $this, 'save_adminmenu' ) );
 		add_action( 'wp_ajax_launcher', array( $this, 'get_results' ) );
+		add_action( 'activated_plugin', array( $this, 'refresh_transient' ) );
+		add_action( 'activated_plugin', array( $this, 'save_post' ) );
+	}
+
+	/**
+	 * ユーザーが管理者権限か判断
+	 * @return bool
+	 */
+	public function check_user_capabillity() {
+		return current_user_can( $this->capability );
 	}
 
 	/**
@@ -72,7 +85,9 @@ class powearch {
 
 		$nonce = ( isset( $_REQUEST['nonce'] ) ) ? $_REQUEST['nonce'] : '';
 
-		if ( ! wp_verify_nonce( $nonce, plugin_basename( __FILE__ ) ) ) {
+		if ( ! wp_verify_nonce( $nonce, plugin_basename( __FILE__ ) )
+		     ||
+		     ! $this->check_user_capabillity() ) {
 			wp_send_json( array( 'error' ) );
 		}
 
@@ -126,8 +141,13 @@ class powearch {
 	 */
 	public function typeahead_init() {
 
-		if ( ! is_user_logged_in()
-		     && ! is_admin()
+		if ( ! $this->check_user_capabillity()
+		     ||
+		     (
+				! is_user_logged_in()
+				&&
+				! is_admin()
+			)
 		) {
 			return false;
 		}
@@ -161,7 +181,13 @@ class powearch {
 			delete_transient( $this->transient_key );
 			set_transient( $this->transient_key, $save_menus );
 		}
+	}
 
+	/**
+	 * キャッシュデータを削除
+	 */
+	public function refresh_transient() {
+		delete_transient( $this->transient_key );
 	}
 
 	/**
@@ -169,7 +195,7 @@ class powearch {
 	 * @return bool
 	 */
 	public function tyepahead_search_template() {
-		if ( ! is_user_logged_in() && ! is_admin() ) {
+		if ( ! $this->check_user_capabillity() || ( ! is_user_logged_in() && ! is_admin() ) ) {
 			return false;
 		}
 		?>
@@ -181,8 +207,7 @@ class powearch {
 				<input type="submit" style="display: none"/>
 			</form>
 			<div class="laucher__results Typeahead-menu"></div>
-		</div>
-	<?php
+		</div>	<?php
 	}
 
 
@@ -360,6 +385,7 @@ class powearch {
 	protected static function strip_title( $pre_title ) {
 		$pattern = sprintf( "/<%s.*?>.*?<\/%s>/mis", 'span', 'span' );
 		$title   = preg_replace( $pattern, "", $pre_title );
+
 		return strip_tags( $title );
 	}
 
