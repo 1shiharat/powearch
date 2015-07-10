@@ -5,7 +5,7 @@ Plugin Name: Powearch
 Plugin URI: http://grow-group.jp/
 Description: Is a powerful search plugin for WordPress users.Start by pressing SHIFT key two times.
 Author: 1shiharaT
-Version: 0.0.2
+Version: 0.0.3
 Author URI: http://grow-group.jp/
 Text Domain: powearch
 Domain Path: /languages/
