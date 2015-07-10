@@ -1,11 +1,10 @@
 <?php
-
 /*
 Plugin Name: Powearch
 Plugin URI: http://grow-group.jp/
 Description: Is a powerful search plugin for WordPress users.Start by pressing SHIFT key two times.
 Author: 1shiharaT
-Version: 0.0.1
+Version: 0.0.2
 Author URI: http://grow-group.jp/
 Text Domain: powearch
 Domain Path: /languages/
@@ -109,8 +108,8 @@ class powearch {
 		foreach ( $list as $l ) {
 			foreach ( $search_word as $sword ) {
 				$word      = ( $sword ) ? $sword : '';
-				$pos       = mb_strpos( $l['value'], $word );
-				$group_pos = mb_strpos( $l['group'], $word );
+				$pos       = mb_stristr( $l['value'], $word );
+				$group_pos = mb_stristr( $l['group'], $word );
 				if ( $pos !== false || $group_pos !== false ) {
 					$returnMenuObject[] = $l;
 				}
@@ -361,7 +360,6 @@ class powearch {
 	protected static function strip_title( $pre_title ) {
 		$pattern = sprintf( "/<%s.*?>.*?<\/%s>/mis", 'span', 'span' );
 		$title   = preg_replace( $pattern, "", $pre_title );
-
 		return strip_tags( $title );
 	}
 
