@@ -5,13 +5,25 @@
  * @author Tareq Hasan
  */
 if ( ! class_exists( 'powearchAdmin' ) ) :
+
 	class powearchAdmin {
+
 		private $settings_api;
 
 		public function __construct() {
 			$this->settings_api = new settingApi();
 			add_action( 'admin_init', array( $this, 'admin_init' ) );
 			add_action( 'admin_menu', array( $this, 'admin_menu' ) );
+			add_action( 'admin_enqueue_scripts', array( $this, 'enqueue_script' ) );
+		}
+
+		public function enqueue_script( $hook ){
+
+			if ( $hook !== "settings_page_powearch_setting"){
+				return false;
+			}
+			wp_enqueue_script( 'mousetrap-min-js', plugins_url( 'assets/js/mousetrap.min.js' ), array( 'jquery' ), null , false );
+			wp_enqueue_script( 'mousetrap-min-js', plugins_url( 'assets/js/admin.js' ), array( 'jquery' ), null , false );
 		}
 
 		public function admin_init() {
@@ -21,7 +33,7 @@ if ( ! class_exists( 'powearchAdmin' ) ) :
 		}
 
 		public function admin_menu() {
-			add_options_page( __( 'Powearch', 'powearch' ), __( 'Powearch', 'powearch' ), 'delete_posts', 'settings_api_test', array(
+			add_options_page( __( 'Powearch', 'powearch' ), __( 'Powearch', 'powearch' ), 'delete_posts', 'powearch_setting', array(
 				$this,
 				'plugin_page'
 			) );
@@ -30,17 +42,9 @@ if ( ! class_exists( 'powearchAdmin' ) ) :
 		public function get_settings_sections() {
 			$sections = array(
 				array(
-					'id'    => 'wedevs_basics',
-					'title' => __( 'Basic Settings', 'wedevs' )
+					'id'    => 'powearch_basics',
+					'title' => __( 'Basic Settings', 'powearch' )
 				),
-				array(
-					'id'    => 'wedevs_advanced',
-					'title' => __( 'Advanced Settings', 'wedevs' )
-				),
-				array(
-					'id'    => 'wedevs_others',
-					'title' => __( 'Other Settings', 'wpuf' )
-				)
 			);
 
 			return $sections;
@@ -54,215 +58,43 @@ if ( ! class_exists( 'powearchAdmin' ) ) :
 		public function get_settings_fields() {
 
 			$settings_fields = array(
-				'wedevs_basics'   => array(
+				'powearch_basics'   => array(
 					array(
-						'name'              => 'text_val',
-						'label'             => __( 'Text Input', 'wedevs' ),
-						'desc'              => __( 'Text input description', 'wedevs' ),
-						'type'              => 'text',
-						'default'           => 'Title',
-						'sanitize_callback' => 'intval'
-					),
-					array(
-						'name'              => 'number_input',
-						'label'             => __( 'Number Input', 'wedevs' ),
-						'desc'              => __( 'Number field with validation callback `intval`', 'wedevs' ),
-						'type'              => 'number',
-						'default'           => 'Title',
-						'sanitize_callback' => 'intval'
-					),
-					array(
-						'name'  => 'textarea',
-						'label' => __( 'Textarea Input', 'wedevs' ),
-						'desc'  => __( 'Textarea description', 'wedevs' ),
-						'type'  => 'textarea'
-					),
-					array(
-						'name'  => 'checkbox',
-						'label' => __( 'Checkbox', 'wedevs' ),
-						'desc'  => __( 'Checkbox Label', 'wedevs' ),
-						'type'  => 'checkbox'
-					),
-					array(
-						'name'    => 'radio',
-						'label'   => __( 'Radio Button', 'wedevs' ),
-						'desc'    => __( 'A radio button', 'wedevs' ),
-						'type'    => 'radio',
+						'name'              => 'powearch_type_key',
+						'label'             => __( 'Type key', 'powearch' ),
+						'desc'              => __( 'Please select the key to type', 'powearch' ),
+						'type'              => 'radio',
+						'default'           => 1,
+						'sanitize_callback' => 'textarea',
 						'options' => array(
-							'yes' => 'Yes',
-							'no'  => 'No'
+							'1' => __( 'Shift key + Shift key' ),
+							'2'  => __( 'Ctrl key + Ctrl key' ),
+							'3'  => __( 'Ctrl key + F key' ),
 						)
 					),
 					array(
-						'name'    => 'multicheck',
-						'label'   => __( 'Multile checkbox', 'wedevs' ),
-						'desc'    => __( 'Multi checkbox description', 'wedevs' ),
-						'type'    => 'multicheck',
-						'options' => array(
-							'one'   => 'One',
-							'two'   => 'Two',
-							'three' => 'Three',
-							'four'  => 'Four'
-						)
+						'name'              => 'powearch_post_type',
+						'label'             => __( 'Post Type', 'powearch' ),
+						'desc'              => __( 'Please select the post type to enable the search', 'powearch' ),
+						'type'              => 'post_type',
+						'default'           => array( 'post', 'page', 'attachment' ),
 					),
 					array(
-						'name'    => 'selectbox',
-						'label'   => __( 'A Dropdown', 'wedevs' ),
-						'desc'    => __( 'Dropdown description', 'wedevs' ),
-						'type'    => 'select',
-						'default' => 'no',
-						'options' => array(
-							'yes' => 'Yes',
-							'no'  => 'No'
-						)
-					),
-					array(
-						'name'    => 'password',
-						'label'   => __( 'Password', 'wedevs' ),
-						'desc'    => __( 'Password description', 'wedevs' ),
-						'type'    => 'password',
-						'default' => ''
-					),
-					array(
-						'name'    => 'file',
-						'label'   => __( 'File', 'wedevs' ),
-						'desc'    => __( 'File description', 'wedevs' ),
-						'type'    => 'file',
-						'default' => '',
-						'options' => array(
-							'button_label' => 'Choose Image'
-						)
-					)
-				),
-				'wedevs_advanced' => array(
-					array(
-						'name'    => 'color',
-						'label'   => __( 'Color', 'wedevs' ),
-						'desc'    => __( 'Color description', 'wedevs' ),
+						'name'    => 'powearch_background_color',
+						'label'   => __( 'Background Color', 'powearch' ),
+						'desc'    => __( 'Please select the background color.', 'powearch' ),
 						'type'    => 'color',
-						'default' => ''
+						'default' => '#41605b'
 					),
 					array(
-						'name'    => 'password',
-						'label'   => __( 'Password', 'wedevs' ),
-						'desc'    => __( 'Password description', 'wedevs' ),
-						'type'    => 'password',
-						'default' => ''
+						'name'    => 'powearch_user_select',
+						'label'   => __( 'Choose a user', 'powearch' ),
+						'desc'    => __( 'Please select the user to enable.', 'powearch' ),
+						'type'    => 'user_select',
+						'default' => array( get_current_user_id() )
 					),
-					array(
-						'name'    => 'wysiwyg',
-						'label'   => __( 'Advanced Editor', 'wedevs' ),
-						'desc'    => __( 'WP_Editor description', 'wedevs' ),
-						'type'    => 'wysiwyg',
-						'default' => ''
-					),
-					array(
-						'name'    => 'multicheck',
-						'label'   => __( 'Multile checkbox', 'wedevs' ),
-						'desc'    => __( 'Multi checkbox description', 'wedevs' ),
-						'type'    => 'multicheck',
-						'default' => array( 'one' => 'one', 'four' => 'four' ),
-						'options' => array(
-							'one'   => 'One',
-							'two'   => 'Two',
-							'three' => 'Three',
-							'four'  => 'Four'
-						)
-					),
-					array(
-						'name'    => 'selectbox',
-						'label'   => __( 'A Dropdown', 'wedevs' ),
-						'desc'    => __( 'Dropdown description', 'wedevs' ),
-						'type'    => 'select',
-						'options' => array(
-							'yes' => 'Yes',
-							'no'  => 'No'
-						)
-					),
-					array(
-						'name'    => 'password',
-						'label'   => __( 'Password', 'wedevs' ),
-						'desc'    => __( 'Password description', 'wedevs' ),
-						'type'    => 'password',
-						'default' => ''
-					),
-					array(
-						'name'    => 'file',
-						'label'   => __( 'File', 'wedevs' ),
-						'desc'    => __( 'File description', 'wedevs' ),
-						'type'    => 'file',
-						'default' => ''
-					)
 				),
-				'wedevs_others'   => array(
-					array(
-						'name'    => 'text',
-						'label'   => __( 'Text Input', 'wedevs' ),
-						'desc'    => __( 'Text input description', 'wedevs' ),
-						'type'    => 'text',
-						'default' => 'Title'
-					),
-					array(
-						'name'  => 'textarea',
-						'label' => __( 'Textarea Input', 'wedevs' ),
-						'desc'  => __( 'Textarea description', 'wedevs' ),
-						'type'  => 'textarea'
-					),
-					array(
-						'name'  => 'checkbox',
-						'label' => __( 'Checkbox', 'wedevs' ),
-						'desc'  => __( 'Checkbox Label', 'wedevs' ),
-						'type'  => 'checkbox'
-					),
-					array(
-						'name'    => 'radio',
-						'label'   => __( 'Radio Button', 'wedevs' ),
-						'desc'    => __( 'A radio button', 'wedevs' ),
-						'type'    => 'radio',
-						'options' => array(
-							'yes' => 'Yes',
-							'no'  => 'No'
-						)
-					),
-					array(
-						'name'    => 'multicheck',
-						'label'   => __( 'Multile checkbox', 'wedevs' ),
-						'desc'    => __( 'Multi checkbox description', 'wedevs' ),
-						'type'    => 'multicheck',
-						'options' => array(
-							'one'   => 'One',
-							'two'   => 'Two',
-							'three' => 'Three',
-							'four'  => 'Four'
-						)
-					),
-					array(
-						'name'    => 'selectbox',
-						'label'   => __( 'A Dropdown', 'wedevs' ),
-						'desc'    => __( 'Dropdown description', 'wedevs' ),
-						'type'    => 'select',
-						'options' => array(
-							'yes' => 'Yes',
-							'no'  => 'No'
-						)
-					),
-					array(
-						'name'    => 'password',
-						'label'   => __( 'Password', 'wedevs' ),
-						'desc'    => __( 'Password description', 'wedevs' ),
-						'type'    => 'password',
-						'default' => ''
-					),
-					array(
-						'name'    => 'file',
-						'label'   => __( 'File', 'wedevs' ),
-						'desc'    => __( 'File description', 'wedevs' ),
-						'type'    => 'file',
-						'default' => ''
-					)
-				)
 			);
-
 
 			return $settings_fields;
 
@@ -270,7 +102,7 @@ if ( ! class_exists( 'powearchAdmin' ) ) :
 
 
 		public function plugin_page() {
-			echo '<div class="wrap">';
+			echo '<div class="wrap"><h1>'. __( 'Powearch Settings', 'powearch' ) . '</h1>';
 			$this->settings_api->show_navigation();
 			$this->settings_api->show_forms();
 			echo '</div>';
@@ -293,4 +125,5 @@ if ( ! class_exists( 'powearchAdmin' ) ) :
 			return $pages_options;
 		}
 	}
+	new powearchAdmin();
 endif;

@@ -234,6 +234,7 @@ if ( !class_exists( 'settingApi' ) ):
 			$html .= $this->get_field_description( $args );
 			echo $html;
 		}
+
 		/**
 		 * Displays a textarea for a settings field
 		 *
@@ -246,6 +247,45 @@ if ( !class_exists( 'settingApi' ) ):
 			$html .= $this->get_field_description( $args );
 			echo $html;
 		}
+
+		/**
+		 * select post type
+		 * @param $args
+		 */
+		function callback_post_type( $args ) {
+			$types = get_post_types( array( 'public' => true,  ), 'objects' );
+			$options = '';
+
+			$value =  $this->get_option( $args['id'], $args['section'], $args['std'] ) ;
+			foreach( $types as $t ){
+				$checked = isset( $value[$t->name] ) ? $value[$t->name] : '0';
+				$options .= sprintf( '<p><label for="%1$s_%3$s"><input type="checkbox" class="checkbox" id="%1$s_%3$s" name="%1$s[%2$s][%3$s]" value="%3$s" %4$s> %3$s </label></p>',$args['section'], $args['id'], $t->name, checked( $checked, $t->name, false ) );
+			}
+			$html = $options;
+			$html .= $this->get_field_description( $args );
+			echo $html;
+		}
+
+		/**
+		 * select post type
+		 * @param $args
+		 */
+		function callback_user_select( $args ) {
+			$users = get_users();
+			$options = '';
+
+			$value =  $this->get_option( $args['id'], $args['section'], $args['std'] ) ;
+
+			foreach( $users as $u ){
+				$checked = isset( $value[$u->ID] ) ? $value[$u->ID] : '0';
+				$options .= sprintf( '<p><label for="%1$s_%3$s"><input type="checkbox" class="checkbox" id="%1$s_%3$s" name="%1$s[%2$s][%3$s]" value="%3$s" %4$s> %5$s </label></p>',$args['section'], $args['id'], $u->ID, checked( $checked, $u->ID, false ), $u->user_login );
+			}
+			$html = $options;
+			$html .= $this->get_field_description( $args );
+			echo $html;
+		}
+
+
 		/**
 		 * Displays a textarea for a settings field
 		 *

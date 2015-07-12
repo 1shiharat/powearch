@@ -1,0 +1,92 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: powearch\n"
+"POT-Creation-Date: 2015-07-12 14:51+0900\n"
+"PO-Revision-Date: 2015-07-12 15:23+0900\n"
+"Last-Translator: ishihara <ishihara@grow-group.jp>\n"
+"Language-Team: growgroup <ishihara@grow-group.jp>\n"
+"Language: ja_JP\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.5.5\n"
+"X-Poedit-KeywordsList: _;gettext;gettext_noop;__;_e\n"
+"X-Poedit-Basepath: .\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-SearchPath-0: ..\n"
+
+#: ../powearch.php:81
+msgid " View"
+msgstr "表示"
+
+#: ../powearch.php:87
+msgid " Edit"
+msgstr "編集"
+
+#: ../powearch.php:185
+msgid "Not found"
+msgstr "見つかりませんでした"
+
+#: ../powearch.php:242
+msgid "Search for action..."
+msgstr "キーワードを入力してください"
+
+#: ../inc/powearchAdmin.php:36
+msgid "Powearch"
+msgstr ""
+
+#: ../inc/powearchAdmin.php:46
+msgid "Basic Settings"
+msgstr "基本的な設定"
+
+#: ../inc/powearchAdmin.php:64
+msgid "Type key"
+msgstr "トリガーキー"
+
+#: ../inc/powearchAdmin.php:65
+msgid "Please select the key to type"
+msgstr "Powearchを起動するショートカットキーを選択してください"
+
+#: ../inc/powearchAdmin.php:70
+msgid "Shift key + Shift key"
+msgstr ""
+
+#: ../inc/powearchAdmin.php:71
+msgid "Ctrl key + Ctrl key"
+msgstr ""
+
+#: ../inc/powearchAdmin.php:72
+msgid "Ctrl key + F key"
+msgstr ""
+
+#: ../inc/powearchAdmin.php:77
+msgid "Post Type"
+msgstr "投稿タイプ"
+
+#: ../inc/powearchAdmin.php:78
+msgid "Please select the post type to enable the search"
+msgstr "検索対象とする投稿タイプを選択してください"
+
+#: ../inc/powearchAdmin.php:84
+msgid "Background Color"
+msgstr "背景色"
+
+#: ../inc/powearchAdmin.php:85
+msgid "Please select the background color."
+msgstr "背景色を選択してください"
+
+#: ../inc/powearchAdmin.php:91
+msgid "Choose a user"
+msgstr "ユーザーを選択"
+
+#: ../inc/powearchAdmin.php:92
+msgid "Please select the user to enable."
+msgstr "有効にするユーザーを選択してください"
+
+#: ../inc/powearchAdmin.php:105
+msgid "Powearch Settings"
+msgstr "Powearch 設定"
+
+#: ../inc/settingApi.php:330
+msgid "Choose File"
+msgstr "ファイルを選択"
